@@ -11,6 +11,8 @@ The game is basically a map of connected rooms. Players can move
 North/South/East/West between rooms. When players enter/leave rooms or
 connect/disconnect, this info is broadcast to other players in a room.
 
+![screenshot](/screenshot.png)
+
 [elm]: https://elm-lang.org/
 [ws]: https://www.npmjs.com/package/ws
 
