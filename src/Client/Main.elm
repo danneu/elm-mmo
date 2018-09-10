@@ -181,31 +181,40 @@ view model =
     case model of
         Unauthed { uname, log, websocketConnected } ->
             div
-                []
-                [ div
-                    []
-                    [ text "Websocket Connected: "
-                    , if websocketConnected then
-                        text "✅"
+                [ class "container" ]
+                [ div [ class "columns", style "padding-top" "50px" ]
+                    [ div [ class "column col-6 col-md-8 col-sm-12 col-mx-auto" ]
+                        [ div
+                            []
+                            [ text "Websocket Connected: "
+                            , if websocketConnected then
+                                text "✅"
 
-                      else
-                        text "❌"
-                    ]
-                , Html.form
-                    [ Html.Events.onSubmit SubmitAuth
-                    ]
-                    [ input
-                        [ placeholder "Username"
-                        , value uname
-                        , Html.Events.onInput SetUname
+                              else
+                                text "❌"
+                            ]
+                        , Html.form
+                            [ Html.Events.onSubmit SubmitAuth
+                            ]
+                            [ div [ class "input-group" ]
+                                [ input
+                                    [ placeholder "Username"
+                                    , value uname
+                                    , Html.Events.onInput SetUname
+                                    , class "form-input"
+                                    , autofocus True
+                                    ]
+                                    []
+                                , input
+                                    [ type_ "submit"
+                                    , value "Join"
+                                    , class "btn btn-primary input-group-btn"
+                                    , disabled (not websocketConnected)
+                                    ]
+                                    []
+                                ]
+                            ]
                         ]
-                        []
-                    , input
-                        [ type_ "submit"
-                        , value "Authenticate"
-                        , disabled (not websocketConnected)
-                        ]
-                        []
                     ]
                 , ul []
                     (List.map
@@ -218,31 +227,49 @@ view model =
 
         Authed { uname, room, log } ->
             div
-                []
-                [ div []
-                    [ button
-                        [ Html.Events.onClick (Move Direction.North)
-                        , disabled (not (List.member Direction.North room.exits))
+                [ class "container" ]
+                [ div [ class "columns col-gapless" ]
+                    [ div [ class "column col-1 col-sm-2" ] []
+                    , div [ class "column col-1 col-sm-2" ]
+                        [ button
+                            [ Html.Events.onClick (Move Direction.North)
+                            , disabled (not (List.member Direction.North room.exits))
+                            , class "btn btn-block"
+                            , classList [ ( "btn-link", not (List.member Direction.North room.exits) ) ]
+                            ]
+                            [ text "North" ]
                         ]
-                        [ text "North" ]
-                    , br [] []
-                    , button
-                        [ Html.Events.onClick (Move Direction.West)
-                        , disabled (not (List.member Direction.West room.exits))
-                        ]
-                        [ text "West" ]
-                    , button
-                        [ Html.Events.onClick (Move Direction.East)
-                        , disabled (not (List.member Direction.East room.exits))
-                        ]
-                        [ text "East" ]
-                    , br [] []
-                    , button
-                        [ Html.Events.onClick (Move Direction.South)
-                        , disabled (not (List.member Direction.South room.exits))
-                        ]
-                        [ text "South" ]
                     ]
+                , div [ class "columns col-gapless" ]
+                    [ div [ class "column col-1 col-sm-2" ]
+                        [ button
+                            [ Html.Events.onClick (Move Direction.West)
+                            , disabled (not (List.member Direction.West room.exits))
+                            , class "btn btn-block"
+                            , classList [ ( "btn-link", not (List.member Direction.West room.exits) ) ]
+                            ]
+                            [ text "West" ]
+                        ]
+                    , div [ class "column col-1 col-sm-2" ]
+                        [ button
+                            [ Html.Events.onClick (Move Direction.South)
+                            , disabled (not (List.member Direction.South room.exits))
+                            , class "btn btn-block"
+                            , classList [ ( "btn-link", not (List.member Direction.South room.exits) ) ]
+                            ]
+                            [ text "South" ]
+                        ]
+                    , div [ class "column col-1 col-sm-2" ]
+                        [ button
+                            [ Html.Events.onClick (Move Direction.East)
+                            , disabled (not (List.member Direction.East room.exits))
+                            , class "btn btn-block"
+                            , classList [ ( "btn-link", not (List.member Direction.East room.exits) ) ]
+                            ]
+                            [ text "East" ]
+                        ]
+                    ]
+                , br [ style "margin-bottom" "20px" ] []
                 , p [ style "font-weight" "bold" ] [ text ("Room: " ++ room.title) ]
                 , if not (String.isEmpty room.desc) then
                     p [] [ text room.desc ]

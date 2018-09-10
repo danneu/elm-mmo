@@ -1,3 +1,4 @@
+require('spectre.css')
 require('./index.scss')
 
 const app = require('./Main.elm').Elm.Main.init({
