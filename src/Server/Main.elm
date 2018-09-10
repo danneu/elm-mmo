@@ -181,7 +181,7 @@ handleMessage model client message =
                                     |> List.filter ((/=) clientId)
                                     |> List.map (\otherId -> Ports.sendMessage otherId (ServerMessage.PlayerLeftRoom (Just direction) (ClientPlayer.fromServerPlayer newPlayer)))
                                 , getClientIdsAtLoc newLoc model.clients
-                                    |> List.map (\otherId -> Ports.sendMessage otherId (ServerMessage.PlayerEnteredRoom (Just direction) (ClientPlayer.fromServerPlayer newPlayer)))
+                                    |> List.map (\otherId -> Ports.sendMessage otherId (ServerMessage.PlayerEnteredRoom (Just (Direction.opposite direction)) (ClientPlayer.fromServerPlayer newPlayer)))
                                 ]
                     in
                     ( { model | clients = newClients }

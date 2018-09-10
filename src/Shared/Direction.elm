@@ -1,4 +1,4 @@
-module Shared.Direction exposing (Direction(..), apply, decoder, encode, fromKey, list, toString)
+module Shared.Direction exposing (Direction(..), apply, decoder, encode, fromKey, list, opposite, toString)
 
 import Json.Decode as JD
 import Json.Encode as JE
@@ -30,6 +30,22 @@ toString direction =
 list : List Direction
 list =
     [ North, South, East, West ]
+
+
+opposite : Direction -> Direction
+opposite direction =
+    case direction of
+        North ->
+            South
+
+        South ->
+            North
+
+        West ->
+            East
+
+        East ->
+            West
 
 
 apply : ( Int, Int ) -> Direction -> ( Int, Int )
