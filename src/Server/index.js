@@ -1,37 +1,36 @@
 const WebSocket = require('ws')
 
+// Our websocket server takes manages the connection but
+// sends messages into our Elm app which implements
+// our server business logic.
 const app = require('./Main.elm').Elm.Main.init({
     flags: null,
 })
 
-const wss = new WebSocket.Server({
+const server = new WebSocket.Server({
     port: 8001,
 })
+console.log('websocket server listening on :8001')
 
-const generateClientId = (() => {
-    let prevClientId = 0
-    return () =>
-        (prevClientId = (prevClientId + 1) % (Number.MAX_SAFE_INTEGER - 1))
-})()
-
+let prevId = 0
 const clients = new Map()
 
-wss.on('connection', (ws) => {
-    const clientId = generateClientId()
-    clients.set(clientId, ws)
+server.on('connection', (socket) => {
+    const clientId = ++prevId
+    clients.set(clientId, socket)
     app.ports.onClientConnected.send(clientId)
 
-    ws.on('message', (envelope) => {
+    socket.on('message', (envelope) => {
         app.ports.onClientMessage.send([clientId, envelope])
     })
 
-    ws.on('close', () => {
+    socket.on('close', () => {
         clients.delete(clientId)
         app.ports.onClientDisconnected.send(clientId)
     })
 })
 
 app.ports.messages.subscribe(([clientId, message]) => {
-    const ws = clients.get(clientId)
-    ws.send(JSON.stringify(message))
+    const socket = clients.get(clientId)
+    socket.send(JSON.stringify(message))
 })

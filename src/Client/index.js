@@ -1,5 +1,5 @@
 require('spectre.css')
-require('./index.scss')
+require('./index.css')
 
 const app = require('./Main.elm').Elm.Main.init({
     node: document.getElementById('main'),
@@ -9,36 +9,36 @@ const app = require('./Main.elm').Elm.Main.init({
 })
 
 const endpoint = 'ws://localhost:8001'
-let ws = null
+let socket = null
 
 app.ports.messages.subscribe((message) => {
-    if (ws) {
-        ws.send(JSON.stringify(message))
+    if (socket) {
+        socket.send(JSON.stringify(message))
     } else {
-        console.warn('ws not set')
+        console.warn('socket not set')
     }
 })
 
 connect()
 
 function connect(attempts = 0) {
-    if (ws) {
-        ws.close()
+    if (socket) {
+        socket.close()
         return
     }
 
-    ws = new WebSocket(endpoint)
+    socket = new WebSocket(endpoint)
 
-    ws.onopen = () => {
+    socket.onopen = () => {
         attempts = 0
         app.ports.onWebSocketChange.send(true)
     }
 
-    ws.onerror = (event) => {}
+    socket.onerror = (event) => {}
 
-    ws.onclose = (event) => {
+    socket.onclose = (event) => {
         app.ports.onWebSocketChange.send(false)
-        ws = null
+        socket = null
 
         const delay = Math.min(1000 * attempts, 10000)
         console.log(attempts, delay + 'ms')
@@ -48,7 +48,7 @@ function connect(attempts = 0) {
         }, delay)
     }
 
-    ws.onmessage = (envelope) => {
+    socket.onmessage = (envelope) => {
         console.log('message from server:', envelope.data)
         app.ports.onServerMessage.send(envelope.data)
     }

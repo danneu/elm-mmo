@@ -22,18 +22,17 @@ Open three terminal panes at project root.
 
 Build and serve client (rebuilds on file change):
 
-    npm run start:client
+    npm run client:start
 
 Build server (rebuilds on file change):
 
-    npm run start:server
+    npm run server:watch
 
-Start server (restarts on file change):
+Start server (reboots on file change):
 
-    npm run nodemon:server
+    npm run server:nodemon
 
-The `start:client` command will print the url that is serving the client.
-By default it's <http://localhost:8080> unless the port is in use.
+Open client: <http://localhost:8000>.
 
 For convenience, url #hash will pre-fill the username of each client
 to make dev/testing quicker:
